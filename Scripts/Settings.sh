@@ -47,11 +47,11 @@ sed -i 's/luci-theme-design/luci-theme-argon/g' feeds/luci/collections/luci/Make
 [ ! -e package/lean/default-settings/files/zzz-default-settings ] && echo "DISTRIB_DESCRIPTION='W($(TZ=UTC-8 date +%Y.%m.%d))@immortalwrt '" >> package/base-files/files/etc/openwrt_release
 
 # 修改默认wifi名称ssid为AX6
-sed -i 's/ssid=OpenWrt/ssid=AX6/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+#sed -i 's/ssid=OpenWrt/ssid=AX6/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 修改默认wifi密码key为password
-sed -i 's/encryption=none/encryption=psk2/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i '/set wireless.default_radio${devidx}.encryption=psk2/a\set wireless.default_radio${devidx}.key=password' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+#sed -i 's/encryption=none/encryption=psk2/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+#sed -i '/set wireless.default_radio${devidx}.encryption=psk2/a\set wireless.default_radio${devidx}.key=password' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 设置密码为password
 sed -i 's/root:::0:99999:7:::/root:$1$iT2B9mTF$d5CTSuJLXZZzSPQYHqwqG.:19867:0:99999:7:::/' package/base-files/files/etc/shadow
