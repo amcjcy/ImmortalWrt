@@ -59,7 +59,6 @@ git_sparse_clone master https://github.com/kiddin9/openwrt-packages redsocks2
 git_sparse_clone master https://github.com/kiddin9/openwrt-packages luci-app-turboacc
 git_sparse_clone master https://github.com/kiddin9/openwrt-packages luci-app-filetransfer
 git_sparse_clone master https://github.com/kiddin9/openwrt-packages luci-app-v2ray-server
-git_sparse_clone master https://github.com/kiddin9/openwrt-packages luci-app-turboacc
 git_sparse_clone master https://github.com/kiddin9/openwrt-packages lua-maxminddb
 rm -rf  package/openwrt-passwall/shadowsocks-rust
 git_sparse_clone master https://github.com/kiddin9/openwrt-packages shadowsocks-rust
