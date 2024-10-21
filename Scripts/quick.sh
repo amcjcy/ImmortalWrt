@@ -21,6 +21,16 @@ rm -rf feeds/luci/applications/luci-app-passwall2
 rm -rf feeds/luci/applications/luci-app-turboacc
 #rm -rf feeds/packages/net/shadowsocks-libev
 
+# Git稀疏克隆，只克隆指定目录到本地
+function git_sparse_clone() {
+  branch="$1" repourl="$2" && shift 2
+  git clone --depth=1 -b $branch --single-branch --filter=blob:none --sparse $repourl
+  repodir=$(echo $repourl | awk -F '/' '{print $(NF)}')
+  cd $repodir && git sparse-checkout set $@
+  mv -f $@ ../package
+  cd .. && rm -rf $repodir
+}
+
 echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >> feeds.conf.default
 #echo 'src-git small https://github.com/kenzok8/small' >> feeds.conf.default
 ######################################################################################
@@ -36,7 +46,7 @@ git_sparse_clone master https://github.com/kiddin9/kwrt-packages luci-app-bypass
 #######################################################################################
 git_sparse_clone master https://github.com/kiddin9/kwrt-packages dnsforwarder
 #git_sparse_clone master https://github.com/rmoyulong/AX6-Actions_Lede qca
-git_sparse_clone master https://github.com/rmoyulong/AX6-Actions_Lede pcre
+#git_sparse_clone master https://github.com/rmoyulong/AX6-Actions_Lede pcre
 #git_sparse_clone master https://github.com/rmoyulong/AX6-Actions_Lede aria2
 #git_sparse_clone main https://github.com/kenzok8/small-package ariang
 #git_sparse_clone master https://github.com/kiddin9/kwrt-packages luci-app-zerotier
