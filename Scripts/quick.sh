@@ -59,7 +59,7 @@ git_sparse_clone main https://github.com/kiddin9/kwrt-packages redsocks2
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-turboacc
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-filetransfer
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-v2ray-server
-#git_sparse_clone main https://github.com/kiddin9/kwrt-packages lua-maxminddb
+git_sparse_clone master https://github.com/jerrykuku/lua-maxminddb package/lua-maxminddb
 rm -rf  package/openwrt-passwall/shadowsocks-rust
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages shadowsocks-rust
 #git_sparse_clone main https://github.com/kenzok8/small-package luci-app-kodexplorer
@@ -76,11 +76,11 @@ git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-onliner
 sudo chmod -Rf 755 package/luci-app-onliner
 
 # msd_lite
-git clone --depth=1 https://github.com/ximiTech/luci-app-msd_lite package/luci-app-msd_lite
-git clone --depth=1 https://github.com/ximiTech/msd_lite package/msd_lite
+#git clone --depth=1 https://github.com/ximiTech/luci-app-msd_lite package/luci-app-msd_lite
+#git clone --depth=1 https://github.com/ximiTech/msd_lite package/msd_lite
 
 # remove v2ray-geodata package from feeds (openwrt-22.03 & master)
-rm -rf feeds/packages/net/v2ray-geodata
+#rm -rf feeds/packages/net/v2ray-geodata
 
 #git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+#git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
