@@ -59,7 +59,7 @@ git_sparse_clone main https://github.com/kiddin9/kwrt-packages redsocks2
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-turboacc
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-filetransfer
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-v2ray-server
-git_sparse_clone master https://github.com/jerrykuku/lua-maxminddb package/lua-maxminddb
+git_sparse_clone master https://github.com/jerrykuku/lua-maxminddb lua-maxminddb
 rm -rf  package/openwrt-passwall/shadowsocks-rust
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages shadowsocks-rust
 #git_sparse_clone main https://github.com/kenzok8/small-package luci-app-kodexplorer
