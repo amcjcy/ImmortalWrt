@@ -74,8 +74,10 @@ git_sparse_clone main https://github.com/kiddin9/kwrt-packages shadowsocks-rust
 # 在线用户
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-onliner
 sudo chmod -Rf 755 package/luci-app-onliner
-# Lucky转发
-git clone  https://github.com/gdy666/luci-app-lucky.git package/lucky
+# Lucky原版
+#git clone  https://github.com/gdy666/luci-app-lucky.git package/lucky
+# Lucky大吉
+git clone https://github.com/sirpdboy/luci-app-lucky.git package/lucky
 
 # msd_lite
 #git clone --depth=1 https://github.com/ximiTech/luci-app-msd_lite package/luci-app-msd_lite
