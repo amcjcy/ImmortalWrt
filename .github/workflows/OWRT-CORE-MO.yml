@@ -1,138 +1,64 @@
 #云编译公用核心
-name: 【联合编译公用核心】
+name: OWRT-CORE-MO
 
 on:
   #公用核心标识
   workflow_call:
     inputs:
-      CORE_TARGET:
+      OWRT_TARGET:
         required: true
         type: string
-      CORE_THEME:
+      OWRT_THEME:
         required: true
         type: string
-      CORE_NAME:
+      OWRT_NAME:
         required: true
         type: string
-      CORE_URL:
+      OWRT_URL:
         required: true
         type: string
-      CORE_PW:
+      OWRT_PW:
         required: true
         type: string
-      CORE_IP:
+      OWRT_IP:
         required: true
         type: string
-      CORE_BRANCH:
+      OWRT_CFG:
         required: true
         type: string
-      CORE_tag_name:
+      OWRT_BRANCH:
         required: true
         type: string
-      CORE_header:
+      OWRT_TYPE:
         required: true
         type: string
-      CORE_config:
+      OWRT_LINUX:
         required: true
         type: string
-      CORE_patch:
-        required: true
-        type: string
-      CORE_patch_after:
-        required: true
-        type: string
-      CORE_SOC_P1_SH:
-        required: true
-        type: string
-      CORE_SOC_P2_SH:
-        required: true
-        type: string
-      CORE_DIY_P1_SH:
-        required: true
-        type: string
-      CORE_DIY_P2_SH:
-        required: true
-        type: string
-      CORE_DIY_P3_SH:
-        required: true
-        type: string
-      CORE_DIY_P4_SH:
-        required: true
-        type: string
-      CORE_remove:
-        required: true
-        type: string
-      CORE_LINUX:
-        required: true
-        type: string
-      CORE_FILES:
-        required: true
-        type: string
-      kernel_repo:
-        required: true
-        type: string
-      kernel_usage:
-        required: true
-        type: string
-      builder_name:
-        required: true
-        type: string
-      auto_kernel:
-        required: true
-        type: string
-      CORE_Pack:
-        required: true
-        type: string
-      CORE_feeds_conf:
-        required: true
-        type: string
-      CORE_META:
-        required: true
-        type: string
-      CORE_Files_SH:
-        required: true
-        type: string
-      OP_router:
+      OWRT_FILES:
         required: true
         type: string
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  CORE_TARGET: ${{inputs.CORE_TARGET}}
-  CORE_THEME: ${{inputs.CORE_THEME}}
-  CORE_NAME: ${{inputs.CORE_NAME}}
-  CORE_URL: ${{inputs.CORE_URL}}
-  CORE_PW: ${{inputs.CORE_PW}}
-  CORE_IP: ${{inputs.CORE_IP}}
-  CORE_BRANCH: ${{inputs.CORE_BRANCH}}
-  CORE_tag_name: ${{inputs.CORE_tag_name}}
-  CORE_header: header/${{inputs.CORE_header}}
-  CORE_config: Config/${{inputs.CORE_config}}
-  CORE_patch: patch/${{inputs.CORE_patch}}
-  CORE_patch_after: patch/${{inputs.CORE_patch_after}}
-  CORE_SOC_P1_SH: soc/${{inputs.CORE_SOC_P1_SH}}
-  CORE_SOC_P2_SH: soc/${{inputs.CORE_SOC_P2_SH}}
-  CORE_DIY_P1_SH: Scripts/${{inputs.CORE_DIY_P1_SH}}
-  CORE_DIY_P2_SH: Scripts/${{inputs.CORE_DIY_P2_SH}}
-  CORE_DIY_P3_SH: Scripts/${{inputs.CORE_DIY_P3_SH}}
-  CORE_DIY_P4_SH: Scripts/${{inputs.CORE_DIY_P4_SH}}
-  CORE_remove: remove/${{inputs.CORE_remove}}
-  CORE_LINUX: ${{inputs.CORE_LINUX}}
-  CORE_FILES: patch/${{inputs.CORE_FILES}}
-  kernel_repo: ${{inputs.kernel_repo}}
-  kernel_usage: ${{inputs.kernel_usage}}
-  builder_name: ${{inputs.builder_name}}
-  auto_kernel: ${{inputs.auto_kernel}}
-  CORE_Pack: ${{inputs.CORE_Pack}}
-  CORE_feeds_conf: patch/${{inputs.CORE_feeds_conf}}
-  CORE_META: ${{inputs.CORE_META}}
-  CORE_Files_SH: remove/${{inputs.CORE_Files_SH}}
-  OP_router: ${{inputs.OP_router}}
+  OWRT_TARGET: ${{inputs.OWRT_TARGET}}
+  OWRT_THEME: ${{inputs.OWRT_THEME}}
+  OWRT_NAME: ${{inputs.OWRT_NAME}}
+  OWRT_URL: ${{inputs.OWRT_URL}}
+  OWRT_PW: ${{inputs.OWRT_PW}}
+  OWRT_IP: ${{inputs.OWRT_IP}}
+  OWRT_CFG: ${{inputs.OWRT_CFG}}
+  OWRT_BRANCH: ${{inputs.OWRT_BRANCH}}
+  OWRT_TYPE: ${{inputs.OWRT_TYPE}}
+  OWRT_LINUX: ${{inputs.OWRT_LINUX}}
+  OWRT_FILES: ${{inputs.OWRT_FILES}}
   TZ: Asia/Shanghai
-
+  #USE_CACHEWRTBUILD: true
+  
 jobs:
-  union_core:
+  owrt_core_mo:
     runs-on: ubuntu-latest
     steps:
+
       - name: 清理服务器空间(Ubuntu)
         uses: rmoyulong/free-disk-space@main
         with:
@@ -152,19 +78,6 @@ jobs:
       - name: 项目检查
         uses: actions/checkout@main
 
-      - name: 最大化编译空间
-        uses: rmoyulong/maximize-build-space@master
-        with:
-          root-reserve-mb: 2048
-          swap-size-mb: 1024
-          build-mount-path: /workdir
-          overprovision-lvm: 'true'
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-          remove-docker-images: 'true'
-
       - name: 检查分配的服务器性能
         run: |
           echo "警告⚠"
@@ -177,8 +90,8 @@ jobs:
           echo "已安装内存详细信息："
           echo -e "$(sudo lshw -short -C memory | grep GiB) \n"
           echo "--------------------------硬盘信息--------------------------"
-          echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT   
-
+          echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT        
+          
       - name: 初始化编译环境
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -197,210 +110,124 @@ jobs:
 
       - name: 初始化变量
         run: |
-          export CORE_DATE=$(TZ=UTC-8 date +"%y.%m.%d_%H.%M.%S")
-          export CORE_SOURCE=$(echo $CORE_URL | cut -d '/' -f 5-)
-          
-          echo "CORE_SOURCE=$CORE_SOURCE" >> $GITHUB_ENV
-          echo "CORE_TARGET=$CORE_TARGET" >> $GITHUB_ENV
-          echo "CORE_DATE=$CORE_DATE" >> $GITHUB_ENV
-          echo "CORE_PW=$CORE_PW" >> $GITHUB_ENV
-          echo "CORE_IP=$CORE_IP" >> $GITHUB_ENV
-          echo "CORE_BRANCH=$CORE_BRANCH" >> $GITHUB_ENV
-          echo "CORE_tag_name=$CORE_tag_name" >> $GITHUB_ENV
-          echo "CORE_header=$CORE_header" >> $GITHUB_ENV
-          echo "CORE_config=$CORE_config" >> $GITHUB_ENV
-          echo "CORE_patch=$CORE_patch" >> $GITHUB_ENV
-          echo "CORE_patch_after=$CORE_patch_after" >> $GITHUB_ENV
-          echo "CORE_SOC_P1_SH=$CORE_SOC_P1_SH" >> $GITHUB_ENV
-          echo "CORE_SOC_P2_SH=$CORE_SOC_P2_SH" >> $GITHUB_ENV
-          echo "CORE_DIY_P1_SH=$CORE_DIY_P1_SH" >> $GITHUB_ENV
-          echo "CORE_DIY_P2_SH=$CORE_DIY_P2_SH" >> $GITHUB_ENV
-          echo "CORE_DIY_P3_SH=$CORE_DIY_P3_SH" >> $GITHUB_ENV
-          echo "CORE_DIY_P4_SH=$CORE_DIY_P4_SH" >> $GITHUB_ENV
-          echo "CORE_remove=$CORE_remove" >> $GITHUB_ENV
-          echo "CORE_LINUX=$CORE_LINUX" >> $GITHUB_ENV
-          echo "CORE_FILES=$CORE_FILES" >> $GITHUB_ENV
-          echo "kernel_repo=$kernel_repo" >> $GITHUB_ENV
-          echo "kernel_usage=$kernel_usage" >> $GITHUB_ENV
-          echo "builder_name=$builder_name" >> $GITHUB_ENV
-          echo "auto_kernel=$auto_kernel" >> $GITHUB_ENV
-          echo "CORE_Pack=$CORE_Pack" >> $GITHUB_ENV
-          echo "CORE_feeds_conf=$CORE_feeds_conf" >> $GITHUB_ENV
-          echo "CORE_THEME=$CORE_THEME" >> $GITHUB_ENV
-          echo "CORE_META=$CORE_META" >> $GITHUB_ENV
-          echo "CORE_Files_SH=$CORE_Files_SH" >> $GITHUB_ENV
-          echo "OP_router=$OP_router" >> $GITHUB_ENV
-          
-          echo "CORE_META: $CORE_META"
-          echo "CORE_IP: $CORE_IP"
-          echo "CORE_THEME: $CORE_THEME"
-          echo "OP_router: $OP_router"
-          
-          # 使用正则表达式校验IP地址格式是否符合规范
-          if [[ $CORE_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "IP地址 $CORE_IP 符合规范。"
-          else
-            echo "IP地址 $CORE_IP 不符合规范。"
-            exit 1
-          fi
-  
+          export OWRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d_%H.%M.%S")
+          export OWRT_SOURCE=$(echo $OWRT_URL | cut -d '/' -f 5-)
+          #export OWRT_TYPE="cortex-a53"
+
+          echo "OWRT_SOURCE=$OWRT_SOURCE" >> $GITHUB_ENV
+          echo "OWRT_TARGET=$OWRT_TARGET" >> $GITHUB_ENV
+          echo "OWRT_DATE=$OWRT_DATE" >> $GITHUB_ENV
+          echo "OWRT_TYPE=$OWRT_TYPE" >> $GITHUB_ENV
+          echo "OWRT_PW=$OWRT_PW" >> $GITHUB_ENV
+          echo "OWRT_IP=$OWRT_IP" >> $GITHUB_ENV
+          echo "OWRT_LINUX=$OWRT_LINUX" >> $GITHUB_ENV
+          echo "OWRT_FILES=$OWRT_FILES" >> $GITHUB_ENV
+
       - name: 检查脚本
         run: |
-          dos2unix ./Scripts/*.sh
-          chmod +x ./Scripts/*.sh
-          
-          dos2unix ./soc/*.sh
-          chmod +x ./soc/*.sh
-          
-          dos2unix ./patch/*.sh
-          chmod +x ./patch/*.sh
-          
-          dos2unix ./remove/*.sh
-          chmod +x ./remove/*.sh
-          
+          cd ./Scripts
+
+          dos2unix ./*.sh
+          chmod +x ./*.sh
 
       - name: 克隆源码库
-        id: codes
-        working-directory: /workdir        
+        working-directory: /workdir
         run: |
           # Set up compilation source code
-          if [[ "${{ inputs.CORE_URL }}" == *"openwrt/openwrt"* ]]; then
+          if [[ "${{ inputs.OWRT_URL }}" == *"openwrt"* ]]; then
               REPO_URL="https://github.com/openwrt/openwrt"
               REPO_BRANCH="main"
-          elif [[ "${{ inputs.CORE_URL }}" == *"coolsnowwolf/lede"* ]]; then
+              TAGS_NAME="official"
+          elif [[ "${{ inputs.OWRT_URL }}" == *"lede"* ]]; then
               REPO_URL="https://github.com/coolsnowwolf/lede"
               REPO_BRANCH="master"
-          elif [[ "${{ inputs.CORE_URL }}" == *"immortalwrt/immortalwrt"* ]]; then
+              TAGS_NAME="lede"
+          elif [[ "${{ inputs.OWRT_URL }}" == *"immortalwrt"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
               REPO_BRANCH="master"
+              TAGS_NAME="immortalwrt"
           else
-              REPO_URL="${{ inputs.CORE_URL }}"
-              REPO_BRANCH="${{ inputs.CORE_BRANCH }}"
+              echo "Unknown source code repository."
+              exit 1
           fi
           
-          if [[ $CORE_LINUX == *"5.15"* ]] ; then
-              REPO_URL="${{ inputs.CORE_URL }}"
-              REPO_BRANCH="${{ inputs.CORE_BRANCH }}"
+          if [[ $OWRT_LINUX == *"5.15"* ]] ; then
+            REPO_BRANCH="${{ inputs.OWRT_BRANCH }}"
           fi
           
           df -hT $PWD
-          git clone -q --single-branch --depth=1 --branch=${REPO_BRANCH} ${REPO_URL} openwrt
+          git clone -q --single-branch --depth=1 --branch=${REPO_BRANCH} ${REPO_URL} openwrt          
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-  
+          [ -e $GITHUB_WORKSPACE/Config/$OWRT_CFG ] && echo "DEVICE_NAME=$(grep '^CONFIG_TARGET_.*_.*_DEVICE_.*=y' $GITHUB_WORKSPACE/Config/$OWRT_CFG | sed -r 's/.*DEVICE_(.*)=y/\1/')" >> $GITHUB_ENV
+
       - name: 加载自定义订阅源
         run: |
           cd openwrt
-          
-          if [[ "${{ inputs.CORE_feeds_conf }}" == *"false"* ]]; then
-            echo "使用默认feeds.conf.default文件"
-          else
-            cp -rf $GITHUB_WORKSPACE/${{ env.CORE_feeds_conf }} ./feeds.conf.default
-          fi
-          
-          if [[ "${{ inputs.CORE_DIY_P1_SH }}" == *"false"* ]]; then
-            echo "不需要执行 CORE_DIY_P1_SH"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_DIY_P1_SH}
-          fi          
-          echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          
-      - name: 前置补丁
-        run: |
-          if [[ "${{ inputs.CORE_patch }}" == *"false"* ]]; then
-            echo "不需要打前置补丁"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_patch}
-          fi
+          # 移除要替换的包
+          #rm -rf feeds/packages/net/mosdns
+          #rm -rf feeds/packages/net/msd_lite
+          #rm -rf feeds/packages/net/smartdns
+          #rm -rf feeds/luci/themes/luci-theme-argon
+          #rm -rf feeds/luci/themes/luci-theme-netgear
+          #rm -rf feeds/luci/applications/luci-app-mosdns
+          #rm -rf feeds/luci/applications/luci-app-netdata
+          #rm -rf feeds/luci/applications/luci-app-serverchan
+          #rm -rf feeds/luci/applications/luci-app-openclash
+          #rm -rf feeds/luci/applications/luci-app-homeproxy          
+          #echo 'src-git mo_small https://github.com/kenzok8/small-package' >>feeds.conf.default
+          #echo 'src-git mo_small https://github.com/kiddin9/kwrt-packages' >> feeds.conf.default
+          $GITHUB_WORKSPACE/Scripts/quick.sh
+          echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV           
 
       - name: 启动缓存[第二次起生效]
         uses: rmoyulong/cachewrtbuild@main
         with:
           ccache: 'true'
           prefix: ${{ github.workspace }}/openwrt
-          mixkey: ${{ env.CORE_SOURCE }}/tree/${{ env.CORE_TARGET }}?device=${{ env.CORE_header }}-${{ env.CORE_config }}
-          
+          mixkey: ${{ env.OWRT_URL }}/tree/${{ env.OWRT_BRANCH }}?device=${{ env.OWRT_CFG }}  	  
+
       - name: 更新订阅源
         run: |
           cd openwrt
-          
+
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          
-      - name: 后置补丁
-        run: |
-          if [[ "${{ inputs.CORE_patch_after }}" == *"false"* ]]; then
-            echo "不需要打后置补丁"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_patch_after}
-          fi
-         
-      - name: 通用脚本
-        run: |
-          cd openwrt
-          
-          curl -L -o package/base-files/files/etc/banner https://raw.githubusercontent.com/rmoyulong/AX6-Actions_Lede/master/ax6/cats_banner
-          ${GITHUB_WORKSPACE}/${CORE_DIY_P2_SH} "${{ env.CORE_IP }}" "${{ env.CORE_NAME }}" "${{ env.CORE_THEME }}" "${{ env.CORE_SOURCE }}"
-          
-          if [[ "${{ inputs.CORE_DIY_P3_SH }}" == *"false"* ]]; then
-            echo "不需要执行 CORE_DIY_P3_SH"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_DIY_P3_SH} "${CORE_FILES}" "${CORE_header}" "${{ env.CORE_SOURCE }}"
-          fi
-          
-          if [[ "${{ inputs.CORE_DIY_P4_SH }}" == *"false"* ]]; then
-            echo "不需要执行 CORE_DIY_P4_SH"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_DIY_P4_SH} "${{ inputs.CORE_META }}" "${{ inputs.CORE_IP }}"
-          fi 
 
-      - name: 删除冲突的插件
+      - name: 自定义脚本
         run: |
           cd openwrt
           
-          if [[ "${{ inputs.CORE_remove }}" == *"false"* ]]; then
-            echo "不需要删除冲突的插件"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_remove}
+          #curl -L -o package/base-files/files/etc/banner https://raw.githubusercontent.com/rmoyulong/AX6-Actions_Lede/master/ax6/cats_banner
+          $GITHUB_WORKSPACE/Scripts/Settings.sh
+          
+          if [[ $OWRT_LINUX == *"6.1.x"*  ]] ; then
+            cd ./package          
+            $GITHUB_WORKSPACE/Scripts/custom.sh
           fi
           
-      - name: 拷贝编译配置文件和插件初始化文件
-        run: |
+          
+          #删除冲突的插件
+          $GITHUB_WORKSPACE/Scripts/remove.sh          
+          
+      - name: 自定义设置
+        run: | 
           cd openwrt
           
-          #如果files文件夹不存在，创建文件夹
-          if [ ! -d "./files" ]; then
-            mkdir ./files
-          fi
-          [ -e $GITHUB_WORKSPACE/$CORE_FILES ] && cp -rf $GITHUB_WORKSPACE/$CORE_FILES/* ./files
+          [ -e $GITHUB_WORKSPACE/$OWRT_FILES ] && mv $GITHUB_WORKSPACE/$OWRT_FILES files
+          
+          rm -rf feeds/packages/lang/golang
+          git clone https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang 
           
           rm -rf ./tmp* ./.config*
-          rm -rf ./.config
+          #rm -rf $(find ./ -type f -iname "*.config*")
+          #make dirclean
+          [ -e $GITHUB_WORKSPACE/Config/$OWRT_CFG ] && mv $GITHUB_WORKSPACE/Config/$OWRT_CFG .config
           
-          if [[ "${{ inputs.CORE_header }}" == *"false"* ]]; then
-             echo "没有header config文件"
-             cat ${GITHUB_WORKSPACE}/${CORE_config}  > .config
-          else
-             cat $GITHUB_WORKSPACE/${CORE_header}  > .config
-             cat $GITHUB_WORKSPACE/${CORE_config} >> .config
-          fi
-          #cat .config          
+          make defconfig
 
-      - name: 修正files文件配置
-        run: |
-          cd openwrt
-          
-          if [[ "${{ inputs.CORE_Files_SH }}" == *"false"* ]]; then
-            echo "不需要执行 CORE_Files_SH"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_Files_SH} "$OP_router" "$CORE_NAME" "${{ inputs.CORE_IP }}"
-            echo $OP_router
-            echo $CORE_header
-          fi
-          
       - name: 下载编译依赖
         working-directory: ./openwrt
         run: |
-          make defconfig
           make download -j$(nproc)
           #make download -j8
           #make -j16 download
@@ -413,108 +240,44 @@ jobs:
           echo -e "$(nproc) thread compile"
           make -j$(nproc) || make -j1 || make -j1 V=s
           echo "status=success" >> $GITHUB_OUTPUT
-          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV 
- 
-      - name: 固件单独处理脚本
-        run: |
-          if [[ "${{ inputs.CORE_SOC_P1_SH }}" == *"false"* ]]; then
-            echo "没有需要单独处理的脚本1"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_SOC_P1_SH}
-          fi
-          
-          if [[ "${{ inputs.CORE_SOC_P2_SH }}" == *"false"* ]]; then
-            echo "没有需要单独处理的脚本2"
-          else
-            ${GITHUB_WORKSPACE}/${CORE_SOC_P2_SH}
-          fi
-          
-      - name: 获得固件信息
-        run: |
-          cd openwrt/bin/targets/*/*
-          kword=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')
-          KERNEL=${kword%~*}
-          echo "KERNEL=$KERNEL" >> $GITHUB_ENV
-          cat sha256sums
-          
+          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV  
+
       - name: 整理固件
         run: |
           cd openwrt && mkdir ./upload
-          
+
           rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|buildinfo\|sha256sums\|packages\)$")
           cp -rf $(find ./bin/targets/ -type f -iname "*.*") ./upload/
-          cp -rf ./.config ./upload/Config.txt
-          
-          export CORE_DATE=$(TZ=UTC-8 date +"%y.%m.%d_%H.%M.%S")
-          echo "CORE_DATE=$CORE_DATE" >> $GITHUB_ENV
-          show_tag_name=${{env.CORE_TARGET}}_${{env.CORE_SOURCE}}_${{env.CORE_DATE}}
-          echo "show_tag_name=$show_tag_name" >> $GITHUB_ENV
-          #获得当前目录的路径信息
+          cp -rf ./.config ./upload/Config_"$OWRT_TARGET"_"$OWRT_SOURCE"_"$OWRT_DATE".txt
+
           cd ./upload
-          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          
-          #如有.tar文件就转化为.gz
-          files=$(ls *.tar 2> /dev/null | wc -l)
-          if [ "$files" != "0" ]; then
-            gzip *.tar
-          fi
 
-      - name: Armv8打包OpenWrt
-        if: env.CORE_Pack == 'ophub'
-        uses: ophub/amlogic-s9xxx-openwrt@main
-        with:
-          openwrt_path: openwrt/upload/*rootfs.tar.gz
-          openwrt_board: ${{ env.CORE_TARGET }}
-          openwrt_kernel: ${{ env.CORE_LINUX }}
-          auto_kernel: ${{ inputs.auto_kernel }}
-          kernel_repo: ${{ inputs.kernel_repo }}
-          kernel_usage: ${{ inputs.kernel_usage }}
-          builder_name: ${{ inputs.builder_name }}
+          $GITHUB_WORKSPACE/Scripts/Renames.sh
 
-      - name: 将编译的底包转换为OpenWrt
-        if: env.CORE_Pack == 'flippy'
-        uses: ophub/flippy-openwrt-actions@main
-        env:
-          OPENWRT_ARMVIRT: openwrt/upload/*rootfs.tar.gz
-          PACKAGE_SOC: ${{ env.CORE_TARGET }}
-          WHOAMI: moyulong
-          KERNEL_VERSION_NAME: ${{ env.CORE_LINUX }}
-          KERNEL_AUTO_LATEST: true
-          GZIP_IMGS: .gz
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: 合并原始资料和打包文件
-        if: env.CORE_Pack == 'ophub'  ||  env.CORE_Pack == 'flippy'
-        run: |
-          cp -f openwrt/upload/*.* ${{ env.PACKAGED_OUTPUTPATH }}/
-          cd ${{ env.PACKAGED_OUTPUTPATH }}/
-          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          
-      - name: 生成标签，上传固件
-        uses: ncipollo/release-action@v1
+      - name: 生成固件标签
+        uses: rmoyulong/action-gh-release@master
         with:
-          allowUpdates: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{env.show_tag_name}}
+          tag_name: ${{env.OWRT_TARGET}}_${{env.OWRT_SOURCE}}_${{env.OWRT_DATE}}
+          files: openwrt/upload/*.*
           body: |
-            ====================🧊固件信息🧊=======================
-            ➦ 📒 固件名称：${{env.CORE_NAME}} ${{env.CORE_tag_name}}
-            ➦ 💻 固件平台：${{ env.CORE_TARGET }}
-            ➦ ⚽ 固件源码：${{ env.CORE_SOURCE }}
-            ➦ 💝 源码分支：${{ env.CORE_BRANCH }}
-            ➦ 🚀 内核版本：${{ env.KERNEL }}
-            ➦ 🌐 默认地址：${{env.CORE_IP}}
-            ➦ 🔑 默认密码：password            
-          artifacts: ${{ env.FIRMWARE }}/*
-          
+            个人使用的AX6固件！
+            刷机有风险！刷前需谨慎！
+
+            源码：${{env.OWRT_SOURCE}}
+            平台：${{env.OWRT_TARGET}}
+            设备：${{env.OWRT_TYPE}}
+            密码：${{env.OWRT_PW}}
+            地址：${{env.OWRT_IP}}
+            内核：${{env.OWRT_LINUX}}
+
       - name: 清理Releases
         uses: rmoyulong/delete-older-releases@master
         with:
-          keep_latest: 16
+          keep_latest: 10
           delete_tags: true
 
       - name: 清理Workflows
         uses: rmoyulong/delete-workflow-runs@main
         with:
           retain_days: 0
-          keep_minimum_runs: 1
+          keep_minimum_runs: 5
