@@ -114,11 +114,16 @@ jobs:
           echo "status=success" >> ${GITHUB_OUTPUT}
           df -Th        
 
-      - name: Download and install pip
-        run: |
-          curl https://raw.githubusercontent.com/amcjcy/onecode/main/get-pip.py -o get-pip.py
-          python3 get-pip.py --quiet
-          rm -rf get-pip.py
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 2.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: '2.7'
+
+      - name: Verify Python version
+        run: python --version
 
       - name: 初始化变量
         run: |
