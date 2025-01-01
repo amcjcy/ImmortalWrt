@@ -117,13 +117,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Python 2.7
-        uses: actions/setup-python@v4
-        with:
-          python-version: '2.7'
+      - name: Update package list
+        run: sudo apt update
 
-      - name: Verify Python version
-        run: python --version
+      - name: Install dependencies for Python 2.7
+        run: sudo apt install -y software-properties-common
+
+      - name: Add the repository for Python 2.7
+        run: sudo add-apt-repository ppa:deadsnakes/ppa -y
+
+      - name: Install Python 2.7
+        run: sudo apt install -y python2.7
+
+      - name: Verify Python 2.7 installation
+        run: python2.7 --version
 
       - name: 初始化变量
         run: |
