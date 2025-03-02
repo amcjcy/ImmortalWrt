@@ -5,8 +5,8 @@ on:
   #对应的是 UTC 时间，需要转换，0 代表北京时间8点，每个月2,12日/22日10点编译一次
   #关闭则手动编译
   workflow_dispatch:
-  schedule:
-    - cron: 0 2 1,11,22 * *
+  #schedule:
+   # - cron: 0 2 1,11,22 * *
 
 #CI权限
 permissions: write-all
